@@ -1,0 +1,35 @@
+{
+  "name": "codex-memory-brain",
+  "version": "0.1.7",
+  "description": "Local repo-aware engineering memory for Codex, backed by SQLite FTS5 over MCP.",
+  "author": {
+    "name": "Cristian"
+  },
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "memory",
+    "mcp",
+    "sqlite",
+    "local-first"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Memory Brain",
+    "shortDescription": "Local durable memory for coding work.",
+    "longDescription": "Codex Memory Brain gives Codex a local, repo-aware memory layer through MCP. It stores durable engineering facts, commands, decisions, gotchas, landmarks, and preferences in SQLite with FTS5 search. The v1 plugin is fully local and makes no network calls.",
+    "developerName": "Cristian",
+    "category": "Coding",
+    "capabilities": [
+      "Local SQLite memory store",
+      "Repo-aware context retrieval",
+      "MCP tools and resources",
+      "MCP prompts for visible UI entry points",
+      "Structured repo memory audit",
+      "Multi-day project continuity checkpoints",
+      "Secret and prompt-injection safeguards"
+    ],
+    "defaultPrompt": "Use codex-memory before repo work. Show Memory Brain status and save durable non-secret repo facts."
+  },
+  "mcpServers": "./.mcp.json"
+}

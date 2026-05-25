@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "codex-memory-brain": {
+      "command": "python3",
+      "args": [
+        "./server/memory_brain_mcp.py"
+      ]
+    }
+  }
+}

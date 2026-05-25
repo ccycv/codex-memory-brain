@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Generated benchmark artifacts can include local project details.
+benchmarks/results/
+
+# Local memory DBs should never be committed.
+*.db
+*.db-shm
+*.db-wal
+
