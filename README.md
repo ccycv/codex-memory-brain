@@ -9,7 +9,7 @@ Codex Memory Brain is an installable Codex plugin that exposes a local memory la
 macOS or Linux:
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/ccycv/codex-memory-brain/main/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/ccycv/codex-memory-brain/HEAD/install.sh)"
 ```
 
 Then open a new Codex chat or restart Codex.
@@ -135,7 +135,7 @@ bash install.sh --dry-run
 Custom install source:
 
 ```bash
-CODEX_MEMORY_REPO_URL=https://github.com/YOUR_ORG/codex-memory-brain.git bash -c "$(curl -fsSL https://raw.githubusercontent.com/YOUR_ORG/codex-memory-brain/main/install.sh)"
+CODEX_MEMORY_REPO_URL=https://github.com/YOUR_ORG/codex-memory-brain.git bash -c "$(curl -fsSL https://raw.githubusercontent.com/YOUR_ORG/codex-memory-brain/HEAD/install.sh)"
 ```
 
 ## Development

@@ -27,10 +27,10 @@ Options:
   -h, --help                Show this help.
 
 One-command install:
-  bash -c "\$(curl -fsSL https://raw.githubusercontent.com/ccycv/codex-memory-brain/main/install.sh)"
+  bash -c "\$(curl -fsSL https://raw.githubusercontent.com/ccycv/codex-memory-brain/HEAD/install.sh)"
 
 Override the source repo:
-  CODEX_MEMORY_REPO_URL=https://github.com/ORG/codex-memory-brain.git bash -c "\$(curl -fsSL https://raw.githubusercontent.com/ORG/codex-memory-brain/main/install.sh)"
+  CODEX_MEMORY_REPO_URL=https://github.com/ORG/codex-memory-brain.git bash -c "\$(curl -fsSL https://raw.githubusercontent.com/ORG/codex-memory-brain/HEAD/install.sh)"
 USAGE
 }
 
