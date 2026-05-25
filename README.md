@@ -58,6 +58,12 @@ Then restart OpenCode and use:
 /goal-complete Done and tested
 ```
 
+For a controlled autonomous loop with hard stop conditions:
+
+```bash
+opencode-goal-run --model opencode-go/qwen3.6-plus --max-steps 8 --goal "Ship the current feature end to end"
+```
+
 ## What It Adds
 
 For Codex, the plugin registers the `codex-memory-brain` MCP server and the `codex-memory` skill.

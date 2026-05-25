@@ -88,6 +88,51 @@ PY
 - `/goal-complete` marks the goal complete.
 - The JSON store contains `set`, `update`, and `complete` history events.
 
+## Controlled Runner Smoke Flow
+
+Run from the repository root.
+
+```bash
+goal_home="$(mktemp -d)"
+
+OPENCODE_GOAL_HOME="$goal_home" python3 opencode-goal/goal-runner.py \
+  --model opencode-go/qwen3.6-plus \
+  --max-steps 2 \
+  --goal "Runner smoke test" \
+  --step-prompt "Call goal_complete with summary 'runner smoke test completed'. Do not edit files." \
+  --json
+```
+
+Expected result:
+
+- The command exits `0`.
+- The JSON summary reason is `terminal_status:complete`.
+- The goal store marks the session goal `complete`.
+- The run summary includes a `goal_complete` tool call.
+
+Safety-limit check:
+
+```bash
+goal_home="$(mktemp -d)"
+set +e
+OPENCODE_GOAL_HOME="$goal_home" python3 opencode-goal/goal-runner.py \
+  --model opencode-go/qwen3.6-plus \
+  --max-steps 1 \
+  --goal "Runner max step smoke test" \
+  --step-prompt "Call goal_update with progress 'still working' and next_steps ['continue later']; do not complete the goal. Do not edit files." \
+  --json
+runner_rc="$?"
+set -e
+test "$runner_rc" -eq 2
+```
+
+Expected result:
+
+- The command exits `2`.
+- The JSON summary reason is `max_steps`.
+- The goal store marks the session goal `paused`.
+- The history includes a `runner_paused` event.
+
 ## Manual TUI Checks
 
 Restart OpenCode after install, then in the TUI run:

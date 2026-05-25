@@ -7,6 +7,7 @@ SOURCE_DIR=""
 INSTALL_DIR="${CODEX_MEMORY_PLUGIN_DIR:-$HOME/plugins/$PROJECT_NAME}"
 OPENCODE_CONFIG="${OPENCODE_CONFIG:-$HOME/.config/opencode/opencode.jsonc}"
 OPENCODE_PLUGIN_DIR="${OPENCODE_PLUGIN_DIR:-$HOME/.config/opencode/plugins}"
+BIN_DIR="${OPENCODE_GOAL_BIN_DIR:-$HOME/.local/bin}"
 DRY_RUN=0
 
 usage() {
@@ -22,6 +23,7 @@ Options:
   --install-dir DIR   Install directory. Defaults to ~/plugins/codex-memory-brain.
   --config FILE       OpenCode config file. Defaults to \$OPENCODE_CONFIG or ~/.config/opencode/opencode.jsonc.
   --plugin-dir DIR    OpenCode global plugin dir. Defaults to ~/.config/opencode/plugins.
+  --bin-dir DIR       Directory for opencode-goal-run. Defaults to ~/.local/bin.
   -h, --help          Show this help.
 
 One-command install:
@@ -49,6 +51,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     --plugin-dir)
       OPENCODE_PLUGIN_DIR="$2"
+      shift 2
+      ;;
+    --bin-dir)
+      BIN_DIR="$2"
       shift 2
       ;;
     -h|--help)
@@ -118,22 +124,25 @@ SOURCE_DIR="$(python3 -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).ex
 INSTALL_DIR="$(python3 -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).expanduser().resolve())' "$INSTALL_DIR")"
 OPENCODE_CONFIG="$(python3 -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).expanduser().resolve())' "$OPENCODE_CONFIG")"
 OPENCODE_PLUGIN_DIR="$(python3 -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).expanduser().resolve())' "$OPENCODE_PLUGIN_DIR")"
+BIN_DIR="$(python3 -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).expanduser().resolve())' "$BIN_DIR")"
 
 echo "OpenCode Goal installer"
 echo "  source:      $SOURCE_DIR"
 echo "  install dir: $INSTALL_DIR"
 echo "  config:      $OPENCODE_CONFIG"
 echo "  plugin dir:  $OPENCODE_PLUGIN_DIR"
+echo "  bin dir:     $BIN_DIR"
 echo "  dry run:     $DRY_RUN"
 
 if [ "$DRY_RUN" -eq 1 ]; then
   exit 0
 fi
 
-python3 - "$SOURCE_DIR" "$INSTALL_DIR" "$OPENCODE_CONFIG" "$OPENCODE_PLUGIN_DIR" <<'PY'
+python3 - "$SOURCE_DIR" "$INSTALL_DIR" "$OPENCODE_CONFIG" "$OPENCODE_PLUGIN_DIR" "$BIN_DIR" <<'PY'
 import json
 import pathlib
 import re
+import shlex
 import shutil
 import sys
 import time
@@ -142,6 +151,7 @@ source = pathlib.Path(sys.argv[1])
 install_dir = pathlib.Path(sys.argv[2])
 config_path = pathlib.Path(sys.argv[3])
 plugin_dir = pathlib.Path(sys.argv[4])
+bin_dir = pathlib.Path(sys.argv[5])
 package_json = config_path.parent / "package.json"
 
 
@@ -207,9 +217,22 @@ def load_config(path: pathlib.Path) -> dict:
 
 copy_tree(source, install_dir)
 
+config_path.parent.mkdir(parents=True, exist_ok=True)
 plugin_dir.mkdir(parents=True, exist_ok=True)
 plugin_target = plugin_dir / "goal-brain.js"
 shutil.copy2(install_dir / "opencode-goal" / "goal-plugin.js", plugin_target)
+
+runner_source = install_dir / "opencode-goal" / "goal-runner.py"
+if not runner_source.exists():
+    raise SystemExit(f"Missing goal runner script: {runner_source}")
+bin_dir.mkdir(parents=True, exist_ok=True)
+runner_target = bin_dir / "opencode-goal-run"
+runner_target.write_text(
+    "#!/usr/bin/env bash\n"
+    "set -euo pipefail\n"
+    f"exec python3 {shlex.quote(str(runner_source))} \"$@\"\n"
+)
+runner_target.chmod(0o755)
 
 if package_json.exists():
     package_data = json.loads(package_json.read_text())
@@ -224,7 +247,6 @@ if not isinstance(dependencies, dict):
 dependencies.setdefault("@opencode-ai/plugin", "^1.15.5")
 package_json.write_text(json.dumps(package_data, indent=2) + "\n")
 
-config_path.parent.mkdir(parents=True, exist_ok=True)
 backup = None
 if config_path.exists():
     backup = config_path.with_suffix(config_path.suffix + f".bak-{time.strftime('%Y%m%d%H%M%S')}")
@@ -268,9 +290,11 @@ commands["goal-clear"] = {
 config_path.write_text(json.dumps(config, indent=2) + "\n")
 
 print(f"Installed plugin: {plugin_target}")
+print(f"Installed runner: {runner_target}")
 print(f"Updated config:   {config_path}")
 print(f"Updated package:  {package_json}")
 if backup:
     print(f"Backup:           {backup}")
 print("Use /goal <objective> in the OpenCode TUI or: opencode run --command goal \"<objective>\"")
+print("Use the controlled runner with: opencode-goal-run --goal \"<objective>\"")
 PY
