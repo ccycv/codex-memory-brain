@@ -1,10 +1,12 @@
 # Codex Memory Brain
 
-Local, repo-aware durable memory for Codex.
+Local, repo-aware durable memory for Codex and OpenCode.
 
-Codex Memory Brain is an installable Codex plugin that exposes a local memory layer through MCP. It stores engineering memory in SQLite with FTS5 search, runs fully on your machine, and makes no cloud calls.
+Codex Memory Brain exposes a local memory layer through MCP. It stores engineering memory in SQLite with FTS5 search, runs fully on your machine, and makes no cloud calls.
 
 ## Install
+
+### Codex
 
 macOS or Linux:
 
@@ -22,9 +24,29 @@ codex mcp get codex-memory-brain
 
 You should see `enabled: true`.
 
+### OpenCode
+
+macOS or Linux:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/ccycv/codex-memory-brain/HEAD/opencode/install.sh)"
+```
+
+Then start a new OpenCode session.
+
+Verify:
+
+```bash
+opencode mcp list
+```
+
+You should see `codex-memory-brain` enabled. The OpenCode installer also adds a global instruction file so OpenCode knows to call `memory_resume_project`, `memory_context`, and `memory_task_checkpoint` during long-running work.
+
 ## What It Adds
 
-The plugin registers the `codex-memory-brain` MCP server and the `codex-memory` skill.
+For Codex, the plugin registers the `codex-memory-brain` MCP server and the `codex-memory` skill.
+
+For OpenCode, the installer registers the same local MCP server under `~/.config/opencode/opencode.jsonc` and adds `opencode/memory-brain-instructions.md` to OpenCode's `instructions`.
 
 Data is stored locally:
 
@@ -130,6 +152,12 @@ Dry run:
 
 ```bash
 bash install.sh --dry-run
+```
+
+Install OpenCode support from a local checkout:
+
+```bash
+bash opencode/install.sh
 ```
 
 Custom install source:
