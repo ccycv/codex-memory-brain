@@ -1,6 +1,6 @@
 {
   "name": "codex-memory-brain",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Local repo-aware engineering memory for Codex and OpenCode, backed by SQLite FTS5 over MCP.",
   "author": {
     "name": "Cristian"
@@ -27,6 +27,7 @@
       "MCP prompts for visible UI entry points",
       "Structured repo memory audit",
       "Multi-day project continuity checkpoints",
+      "OpenCode goal tracking companion",
       "Secret and prompt-injection safeguards"
     ],
     "defaultPrompt": "Use codex-memory before repo work. Show Memory Brain status and save durable non-secret repo facts."

@@ -42,6 +42,22 @@ opencode mcp list
 
 You should see `codex-memory-brain` enabled. The OpenCode installer also adds a global instruction file so OpenCode knows to call `memory_resume_project`, `memory_context`, and `memory_task_checkpoint` during long-running work.
 
+### OpenCode Goal
+
+Install a `/goal`-like local goal tracker for OpenCode:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/ccycv/codex-memory-brain/HEAD/opencode-goal/install.sh)"
+```
+
+Then restart OpenCode and use:
+
+```text
+/goal Ship the current feature end to end
+/goal-status
+/goal-complete Done and tested
+```
+
 ## What It Adds
 
 For Codex, the plugin registers the `codex-memory-brain` MCP server and the `codex-memory` skill.
