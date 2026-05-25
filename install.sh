@@ -77,6 +77,10 @@ need_python() {
 }
 
 script_dir() {
+  if [ -z "${BASH_SOURCE[0]+x}" ] || [ ! -e "${BASH_SOURCE[0]}" ]; then
+    pwd
+    return 0
+  fi
   local src="${BASH_SOURCE[0]}"
   while [ -L "$src" ]; do
     local dir
